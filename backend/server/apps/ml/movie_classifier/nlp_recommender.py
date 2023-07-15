@@ -1,11 +1,8 @@
-import joblib
-
 class NLPMovieClassifier:
-    def __init__(self):
-        path_to_artifacts = "../../research/"
-        self.cosine_sim =  joblib.load(path_to_artifacts + "nlp_recommendation_cosine_sim.joblib")
-        self.titles = joblib.load(path_to_artifacts + "titles.joblib")
-        self.indices = joblib.load(path_to_artifacts + "indices.joblib")
+    def __init__(self, recommendersVariablesBuilder):
+        self.cosine_sim =  recommendersVariablesBuilder.cosine_sim
+        self.titles = recommendersVariablesBuilder.titles
+        self.indices = recommendersVariablesBuilder.indices
    
     def get_recommendations(self, title):
         try:

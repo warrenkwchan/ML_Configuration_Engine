@@ -1,26 +1,7 @@
-#!/usr/bin/env python
-"""Django's command-line utility for administrative tasks."""
-import os
-import sys
-
 from tqdm import tqdm
 import torch, torch.nn as nn, torch.utils.data as data, torchvision as tv, torch.nn.functional as F
 import lightning as L
 from torch.utils.data import Dataset, DataLoader
-
-
-def main():
-    """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'server.settings')
-    try:
-        from django.core.management import execute_from_command_line
-    except ImportError as exc:
-        raise ImportError(
-            "Couldn't import Django. Are you sure it's installed and "
-            "available on your PYTHONPATH environment variable? Did you "
-            "forget to activate a virtual environment?"
-        ) from exc
-    execute_from_command_line(sys.argv)
 
 class NCF(L.LightningModule):
     """ Neural Collaborative Filtering (NCF)
@@ -73,6 +54,7 @@ class NCF(L.LightningModule):
         return DataLoader(MovieLensTrainDataset(self.ratings, self.all_movieIds),
                           batch_size=512, num_workers=4)
     
+
 class MovieLensTrainDataset(Dataset):
     """MovieLens PyTorch Dataset for Training
     
@@ -109,6 +91,3 @@ class MovieLensTrainDataset(Dataset):
                 labels.append(0)
 
         return torch.tensor(users), torch.tensor(items), torch.tensor(labels)
-
-if __name__ == '__main__':
-    main()
