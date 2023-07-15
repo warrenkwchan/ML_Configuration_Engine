@@ -76,7 +76,35 @@ class MLRequestViewSet(
 
 class PredictView(views.APIView):
     def post(self, request, endpoint_name, format=None):
+        if (endpoint_name == 'income_classifier'):
+            return self.income_classifier(request, endpoint_name, format)
+        elif (endpoint_name == 'movie_classifier'):
+            return self.movie_classifier(request, endpoint_name, format)
+        print("Congratulation it is movie classifier")
+        return Response({"Status":200})
+    
+    def movie_classifier(self, request, endpoint_name, format):
+        algorithm_status = self.request.query_params.get("status", "production")
+        algorithm_version = self.request.query_params.get("version")
+        algs = MLAlgorithm.objects.filter(parent_endpoint__name = endpoint_name, status__status = algorithm_status, status__active=True)
+        algorithm_object = registry.endpoints[3]
+        prediction = algorithm_object.get_recommendations("Ip Man")
 
+        # label = prediction["label"] if "label" in prediction else "error"
+        # ml_request = MLRequest(
+        #     input_data=json.dumps(request.data),
+        #     full_response=prediction,
+        #     response=label,
+        #     feedback="",
+        #     parent_mlalgorithm=3,
+        # )
+        # ml_request.save()
+
+        # prediction["request_id"] = ml_request.id
+
+        return Response(prediction)
+    
+    def income_classifier(self, request, endpoint_name, format):
         algorithm_status = self.request.query_params.get("status", "production")
         algorithm_version = self.request.query_params.get("version")
 
@@ -116,6 +144,7 @@ class PredictView(views.APIView):
         prediction["request_id"] = ml_request.id
 
         return Response(prediction)
+
     
 class ABTestViewSet(
     mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet,
