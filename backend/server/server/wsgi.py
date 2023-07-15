@@ -7,15 +7,15 @@ application = get_wsgi_application()
 # ML registry
 import inspect
 from apps.ml.registry import MLRegistry
-from apps.ml.income_classifier.random_forest import RandomForestClassifier
-from apps.ml.income_classifier.extra_trees import ExtraTreesClassifier # import ExtraTrees ML algorithm
+from apps.ml.movie_classifier.random_forest import RandomForestClassifier
+from apps.ml.movie_classifier.extra_trees import ExtraTreesClassifier # import ExtraTrees ML algorithm
 
 try:
     registry = MLRegistry() # create ML registry
     # Random Forest classifier
     rf = RandomForestClassifier()
     # add to ML registry
-    registry.add_algorithm(endpoint_name="income_classifier",
+    registry.add_algorithm(endpoint_name="movie_classifier",
                             algorithm_object=rf,
                             algorithm_name="random forest",
                             algorithm_status="production",
@@ -27,7 +27,7 @@ try:
     # Extra Trees classifier
     et = ExtraTreesClassifier()
     # add to ML registry
-    registry.add_algorithm(endpoint_name="income_classifier",
+    registry.add_algorithm(endpoint_name="movie_classifier",
                             algorithm_object=et,
                             algorithm_name="extra trees",
                             algorithm_status="testing",
