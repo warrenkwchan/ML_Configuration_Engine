@@ -1,7 +1,7 @@
-from tqdm import tqdm
-import torch, torch.nn as nn, torch.utils.data as data, torchvision as tv, torch.nn.functional as F
+import torch, torch.nn as nn
 import lightning as L
 from torch.utils.data import Dataset, DataLoader
+import numpy as np
 
 class NCF(L.LightningModule):
     """ Neural Collaborative Filtering (NCF)

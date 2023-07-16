@@ -21,10 +21,12 @@ class HybridNLPNCFRecommender:
             sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
             sim_scores = sim_scores[1:26]
             movie_indices = [i[0] for i in sim_scores]
+            print(movie_indices)
             predicted_labels = np.squeeze(self.ncf_model(torch.tensor([userId]*len(movie_indices)), 
                                             torch.tensor(list(movie_indices))).detach().numpy())
             top10_items = [movie_indices[i] for i in np.argsort(predicted_labels)[::-1][0:10].tolist()] 
             movies = self.pmm.iloc[top10_items][['title', 'vote_count', 'vote_average', 'id']]
+            print(userId)
             print(movies)
         except Exception as e:
             return {"status": "Error", "message": str(e)}

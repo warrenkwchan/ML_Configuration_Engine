@@ -24,6 +24,8 @@ class HybridNLPSVDRecommender:
             movies = self.pmm.iloc[movie_indices][['title', 'vote_count', 'vote_average', 'id']]
             movies['est'] = movies['id'].apply(lambda x: self.svd.predict(userId, self.indices_map.loc[x]['movieId']).est)
             movies = movies.sort_values('est', ascending=False)
+            print(userId)
+            print(movies)
         except Exception as e:
             return {"status": "Error", "message": str(e)}
         return {"movie_recommendations": list(movies["title"])[:10], "status": "OK"}

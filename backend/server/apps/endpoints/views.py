@@ -62,8 +62,6 @@ class MLAlgorithmStatusViewSet(
                 # set active=False for other statuses
                 deactivate_other_statuses(instance)
 
-
-
         except Exception as e:
             raise APIException(str(e))
 
@@ -80,16 +78,27 @@ class PredictView(views.APIView):
             return self.income_classifier(request, endpoint_name, format)
         elif (endpoint_name == 'movie_classifier'):
             return self.movie_classifier(request, endpoint_name, format)
-        print("Congratulation it is movie classifier")
-        return Response({"Status":200})
+        return Response({"Status":400, "Message": "Bad Request"})
     
     def movie_classifier(self, request, endpoint_name, format):
-        algorithm_status = self.request.query_params.get("status", "production")
-        algorithm_version = self.request.query_params.get("version")
-        algs = MLAlgorithm.objects.filter(parent_endpoint__name = endpoint_name, status__status = algorithm_status, status__active=True)
-        algorithm_object = registry.endpoints[3]
-        prediction = algorithm_object.get_recommendations("Ip Man")
+        alogrithm_selected = request.query_params.get("ml_algorithm", "default")
+        prediction = []
+        title = request.data.get("title", "Toy Story")
+        userID = request.query_params.get("user_id", 5)    
+        print(userID)
+        if (alogrithm_selected == "nlp"):
+            algorithm_object = registry.endpoints[3]
+            prediction = algorithm_object.get_recommendations(title)
+        elif(alogrithm_selected == "nlp_svd"):
+            algorithm_object = registry.endpoints[4]
+            print(userID)
+            prediction = algorithm_object.get_recommendations(userID, title)
+        else:
+            algorithm_object = registry.endpoints[5]
+            print(userID)
+            prediction = algorithm_object.get_recommendations(userID, title)
 
+        #TODO: Add requests to server
         # label = prediction["label"] if "label" in prediction else "error"
         # ml_request = MLRequest(
         #     input_data=json.dumps(request.data),

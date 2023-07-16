@@ -78,22 +78,22 @@ class MLTests(TestCase):
         self.assertTrue('label' in response)
         self.assertEqual('<=50K', response['label'])
 
-    # def test_nlp_algorithm(self):
-    #     my_alg = NLPMovieClassifier(self.rvb)
-    #     response = my_alg.get_recommendations('Ip Man')
-    #     self.assertEqual('OK', response['status'])
-    #     self.assertTrue('movie_recommendations' in response)
-    #     self.assertTrue('Wing Chun' in response['movie_recommendations'].values)
-
-    # def test_hybrid_nlp_svd_algorithm(self):
-    #     my_alg = HybridNLPSVDRecommender(self.rvb)
-    #     response = my_alg.get_recommendations(5, 'Toy Story')
-    #     self.assertEqual('OK', response['status'])
-    #     self.assertTrue('movie_recommendations' in response)
-    #     self.assertTrue('Toy Story 2' in response['movie_recommendations'])
+    def test_nlp_algorithm(self):
+        my_alg = NLPMovieClassifier(self.rvb)
+        response = my_alg.get_recommendations('Ip Man')
+        self.assertEqual('OK', response['status'])
+        self.assertTrue('movie_recommendations' in response)
+        self.assertTrue('Wing Chun' in response['movie_recommendations'].values)
 
     def test_hybrid_nlp_svd_algorithm(self):
-        my_alg = HybridNLPNCFRecommender()
+        my_alg = HybridNLPSVDRecommender(self.rvb)
+        response = my_alg.get_recommendations(5, 'Toy Story')
+        self.assertEqual('OK', response['status'])
+        self.assertTrue('movie_recommendations' in response)
+        self.assertTrue('Toy Story 2' in response['movie_recommendations'])
+
+    def test_hybrid_nlp_svd_algorithm(self):
+        my_alg = HybridNLPNCFRecommender(self.rvb)
         response = my_alg.get_recommendations(5, 'Toy Story')
         self.assertEqual('OK', response['status'])
         self.assertTrue('movie_recommendations' in response)
