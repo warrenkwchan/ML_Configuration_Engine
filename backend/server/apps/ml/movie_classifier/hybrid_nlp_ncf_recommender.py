@@ -1,19 +1,21 @@
 import numpy as np
 import torch, torch.nn 
+import copy 
 
 class HybridNLPNCFRecommender:
     def __init__(self, recommendersVariablesBuilder):
-        self.cosine_sim =  recommendersVariablesBuilder.cosine_sim
-        self.titles = recommendersVariablesBuilder.titles
-        self.indices = recommendersVariablesBuilder.indices
-        self.id_map = recommendersVariablesBuilder.id_map
-        self.pmm = recommendersVariablesBuilder.pmm
-        self.indices_map = recommendersVariablesBuilder.indices_map 
-        self.ncf_model = recommendersVariablesBuilder.ncf_model
+        self.cosine_sim =  copy.copy(recommendersVariablesBuilder.cosine_sim)
+        self.titles = copy.copy(recommendersVariablesBuilder.titles)
+        self.indices = copy.copy(recommendersVariablesBuilder.indices)
+        self.id_map = copy.copy(recommendersVariablesBuilder.id_map)
+        self.pmm = copy.copy(recommendersVariablesBuilder.pmm)
+        self.indices_map = copy.copy(recommendersVariablesBuilder.indices_map)
+        self.ncf_model = copy.copy(recommendersVariablesBuilder.ncf_model)
 
 
     def get_recommendations(self, userId, title):
         try:
+            userId = int(userId)
             idx = self.indices[title]
             if not isinstance(idx, np.integer):
                 idx = list(idx.values)[0]
