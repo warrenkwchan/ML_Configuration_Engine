@@ -1,10 +1,18 @@
 import inspect
 from apps.ml.registry import MLRegistry
 from django.test import TestCase
-from apps.ml.income_classifier.random_forest import RandomForestClassifier
-from apps.ml.income_classifier.extra_trees import ExtraTreesClassifier
+from apps.ml.movie_classifier.random_forest import RandomForestClassifier
+from apps.ml.movie_classifier.extra_trees import ExtraTreesClassifier
+from apps.ml.movie_classifier.nlp_recommender import NLPMovieClassifier
+from apps.ml.movie_classifier.hybrid_nlp_svd_recommender import HybridNLPSVDRecommender
+from apps.ml.movie_classifier.hybrid_nlp_ncf_recommender import HybridNLPNCFRecommender
+from apps.ml.movie_classifier.recommenders_variables_builder import RecommendersVariablesBuilder
 
 class MLTests(TestCase):
+    def __init__(self, *args, **kwargs):
+        super(MLTests, self).__init__(*args, **kwargs)
+        self.rvb = RecommendersVariablesBuilder()
+
     def test_rf_algorithm(self):
         input_data = {
             "age": 37,
@@ -32,7 +40,7 @@ class MLTests(TestCase):
     def test_registry(self):
         registry = MLRegistry()
         self.assertEqual(len(registry.endpoints), 0)
-        endpoint_name = "income_classifier"
+        endpoint_name = "movie_classifier"
         algorithm_object = RandomForestClassifier()
         algorithm_name = "random forest"
         algorithm_status = "production"
@@ -69,3 +77,24 @@ class MLTests(TestCase):
         self.assertEqual('OK', response['status'])
         self.assertTrue('label' in response)
         self.assertEqual('<=50K', response['label'])
+
+    def test_nlp_algorithm(self):
+        my_alg = NLPMovieClassifier(self.rvb)
+        response = my_alg.get_recommendations('Ip Man')
+        self.assertEqual('OK', response['status'])
+        self.assertTrue('movie_recommendations' in response)
+        self.assertTrue('Wing Chun' in response['movie_recommendations'].values)
+
+    def test_hybrid_nlp_svd_algorithm(self):
+        my_alg = HybridNLPSVDRecommender(self.rvb)
+        response = my_alg.get_recommendations(5, 'Toy Story')
+        self.assertEqual('OK', response['status'])
+        self.assertTrue('movie_recommendations' in response)
+        self.assertTrue('Toy Story 2' in response['movie_recommendations'])
+
+    def test_hybrid_nlp_svd_algorithm(self):
+        my_alg = HybridNLPNCFRecommender(self.rvb)
+        response = my_alg.get_recommendations(5, 'Toy Story')
+        self.assertEqual('OK', response['status'])
+        self.assertTrue('movie_recommendations' in response)
+        self.assertTrue('Toy Story 2' in response['movie_recommendations'])

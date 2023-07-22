@@ -62,8 +62,6 @@ class MLAlgorithmStatusViewSet(
                 # set active=False for other statuses
                 deactivate_other_statuses(instance)
 
-
-
         except Exception as e:
             raise APIException(str(e))
 
@@ -76,7 +74,46 @@ class MLRequestViewSet(
 
 class PredictView(views.APIView):
     def post(self, request, endpoint_name, format=None):
+        if (endpoint_name == 'income_classifier'):
+            return self.income_classifier(request, endpoint_name, format)
+        elif (endpoint_name == 'movie_classifier'):
+            return self.movie_classifier(request, endpoint_name, format)
+        return Response({"Status":400, "Message": "Bad Request"})
+    
+    def movie_classifier(self, request, endpoint_name, format):
+        alogrithm_selected = request.query_params.get("ml_algorithm", "default")
+        prediction = []
+        title = request.data.get("title", "Toy Story")
+        userID = request.query_params.get("user_id", 5)    
+        print(userID)
+        if (alogrithm_selected == "nlp"):
+            algorithm_object = registry.endpoints[3]
+            prediction = algorithm_object.get_recommendations(title)
+        elif(alogrithm_selected == "nlp_svd"):
+            algorithm_object = registry.endpoints[4]
+            print(userID)
+            prediction = algorithm_object.get_recommendations(userID, title)
+        else:
+            algorithm_object = registry.endpoints[5]
+            print(userID)
+            prediction = algorithm_object.get_recommendations(userID, title)
 
+        #TODO: Add requests to server
+        # label = prediction["label"] if "label" in prediction else "error"
+        # ml_request = MLRequest(
+        #     input_data=json.dumps(request.data),
+        #     full_response=prediction,
+        #     response=label,
+        #     feedback="",
+        #     parent_mlalgorithm=3,
+        # )
+        # ml_request.save()
+
+        # prediction["request_id"] = ml_request.id
+
+        return Response(prediction)
+    
+    def income_classifier(self, request, endpoint_name, format):
         algorithm_status = self.request.query_params.get("status", "production")
         algorithm_version = self.request.query_params.get("version")
 
@@ -116,6 +153,7 @@ class PredictView(views.APIView):
         prediction["request_id"] = ml_request.id
 
         return Response(prediction)
+
     
 class ABTestViewSet(
     mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet,

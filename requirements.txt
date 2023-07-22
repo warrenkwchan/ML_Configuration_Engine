@@ -7,3 +7,9 @@ numpy
 pandas
 requests
 scikit-learn
+matplotlib 
+surprise
+torch
+lightning
+torchvision
+dill
