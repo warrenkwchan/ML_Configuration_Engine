@@ -2,6 +2,7 @@ import joblib
 from apps.ml.movie_classifier.ncf_utility import NCF
 import pandas as pd
 import numpy as np
+import lightning as L
 
 class RecommendersVariablesBuilder:
     def __init__(self):
@@ -17,7 +18,7 @@ class RecommendersVariablesBuilder:
 
     
     def getNCFModel(self):
-        ratings = pd.read_csv("../../research/ratings.csv")
+        ratings = pd.read_csv("../../research/ratings_small.csv")
         rand_userIds = np.random.choice(ratings['userId'].unique(), 
                                 size=int(len(ratings['userId'].unique())*0.3), 
                                 replace=False)
@@ -33,8 +34,9 @@ class RecommendersVariablesBuilder:
         num_items = ratings['movieId'].max()+1
         all_movieIds = ratings['movieId'].unique()
 
-        NCF(num_users, num_items, train_ratings, all_movieIds)
-        ncf_model= joblib.load("../../research/ncf_model.joblib")
+        ncf_model= NCF(num_users, num_items, train_ratings, all_movieIds)
+        # trainer = L.Trainer(max_epochs=5, accelerator='auto', reload_dataloaders_every_n_epochs=1)
+        # trainer.fit(ncf_model)
         return ncf_model
 
 

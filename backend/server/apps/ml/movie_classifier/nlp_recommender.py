@@ -1,10 +1,11 @@
 import numpy as np
+import copy
 
 class NLPMovieClassifier:
     def __init__(self, recommendersVariablesBuilder):
-        self.cosine_sim =  recommendersVariablesBuilder.cosine_sim
-        self.titles = recommendersVariablesBuilder.titles
-        self.indices = recommendersVariablesBuilder.indices
+        self.cosine_sim =  copy.copy(recommendersVariablesBuilder.cosine_sim)
+        self.titles = copy.copy(recommendersVariablesBuilder.titles)
+        self.indices = copy.copy(recommendersVariablesBuilder.indices)
    
     def get_recommendations(self, title):
         try:
