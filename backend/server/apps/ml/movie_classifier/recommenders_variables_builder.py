@@ -34,9 +34,10 @@ class RecommendersVariablesBuilder:
         num_items = ratings['movieId'].max()+1
         all_movieIds = ratings['movieId'].unique()
 
-        ncf_model= NCF(num_users, num_items, train_ratings, all_movieIds)
+        # ncf_model= NCF(num_users, num_items, train_ratings, all_movieIds)
         # trainer = L.Trainer(max_epochs=5, accelerator='auto', reload_dataloaders_every_n_epochs=1)
         # trainer.fit(ncf_model)
+        ncf_model = joblib.load("./ncf_model.joblib")
         return ncf_model
 
 
