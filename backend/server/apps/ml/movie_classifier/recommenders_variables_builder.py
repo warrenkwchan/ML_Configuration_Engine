@@ -18,21 +18,21 @@ class RecommendersVariablesBuilder:
 
     
     def getNCFModel(self):
-        ratings = pd.read_csv("../../research/ratings_small.csv")
-        rand_userIds = np.random.choice(ratings['userId'].unique(), 
-                                size=int(len(ratings['userId'].unique())*0.3), 
-                                replace=False)
+        # ratings = pd.read_csv("../../research/ratings_small.csv")
+        # rand_userIds = np.random.choice(ratings['userId'].unique(), 
+        #                         size=int(len(ratings['userId'].unique())*0.3), 
+        #                         replace=False)
 
-        ratings = ratings.loc[ratings['userId'].isin(rand_userIds)]
+        # ratings = ratings.loc[ratings['userId'].isin(rand_userIds)]
 
-        ratings['rank_latest'] = ratings.groupby(['userId'])['timestamp'] \
-                                .rank(method='first', ascending=False)
+        # ratings['rank_latest'] = ratings.groupby(['userId'])['timestamp'] \
+        #                         .rank(method='first', ascending=False)
 
-        train_ratings = ratings[ratings['rank_latest'] != 1]
-        train_ratings = train_ratings[['userId', 'movieId', 'rating']]
-        num_users = ratings['userId'].max()+1
-        num_items = ratings['movieId'].max()+1
-        all_movieIds = ratings['movieId'].unique()
+        # train_ratings = ratings[ratings['rank_latest'] != 1]
+        # train_ratings = train_ratings[['userId', 'movieId', 'rating']]
+        # num_users = ratings['userId'].max()+1
+        # num_items = ratings['movieId'].max()+1
+        # all_movieIds = ratings['movieId'].unique()
 
         # ncf_model= NCF(num_users, num_items, train_ratings, all_movieIds)
         # trainer = L.Trainer(max_epochs=5, accelerator='auto', reload_dataloaders_every_n_epochs=1)
